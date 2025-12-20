@@ -16,7 +16,10 @@ import AdminLockMonth from "./pages/AdminLockMonth";
 import AdminMonthlyReports from "./pages/AdminMonthlyReports";
 import VillagerComplaints from "./pages/VillagerComplaints";
 import ManageComplaints from "./pages/ManageComplaints";
-
+import VillagerAnnouncements from "./pages/VillagerAnnouncements";
+import ManageAnnouncements from "./pages/ManageAnnouncements";
+import VillagerEvents from "./pages/VillagerEvents";
+import ManageEvents from "./pages/ManageEvents";
 const App = () => {
   return (
     <BrowserRouter>
@@ -51,6 +54,22 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/villager/announcements"
+          element={
+            <ProtectedRoute allowedRoles={["villager"]}>
+              <VillagerAnnouncements />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/villager/events"
+          element={
+            <ProtectedRoute allowedRoles={["villager"]}>
+              <VillagerEvents />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Committee */}
         <Route
@@ -82,6 +101,22 @@ const App = () => {
           element={
             <ProtectedRoute allowedRoles={["committee", "admin"]}>
               <ManageComplaints />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/committee/announcements"
+          element={
+            <ProtectedRoute allowedRoles={["committee", "admin"]}>
+              <ManageAnnouncements />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/committee/events"
+          element={
+            <ProtectedRoute allowedRoles={["committee", "admin"]}>
+              <ManageEvents />
             </ProtectedRoute>
           }
         />

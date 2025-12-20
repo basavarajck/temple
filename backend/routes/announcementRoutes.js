@@ -42,7 +42,7 @@ router.put(
 router.delete(
   "/:id",
   authMiddleware,
-  adminOnly,
+  permitRoles("committee", "admin"),
   deleteAnnouncement
 );
 
