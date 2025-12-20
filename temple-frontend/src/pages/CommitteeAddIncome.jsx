@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Layout from "../components/Layout";
 import api from "../api/axios";
+import "../styles/income-form.css";
 
 const CommitteeAddIncome = () => {
   const [amount, setAmount] = useState("");
@@ -47,81 +48,56 @@ const CommitteeAddIncome = () => {
     }
   };
 
-  return (
-    <Layout>
-      <h1 className="text-2xl font-semibold mb-6">Add Income</h1>
+ return (
+  <Layout>
+  <div className="income-page">
+    <div className="income-card">
 
-      {error && (
-        <p className="text-red-600 mb-3">{error}</p>
-      )}
-      {message && (
-        <p className="text-green-600 mb-3">{message}</p>
-      )}
+      <div className="income-title">
+        <h1>Add Income</h1>
+        <p>Record new income with optional proof</p>
+      </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow max-w-lg"
-      >
-        <div className="mb-3">
-          <label className="block mb-1">Amount</label>
-          <input
-            type="number"
-            className="w-full border p-2 rounded"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            required
-          />
+      {error && <div className="alert alert-error">{error}</div>}
+      {message && <div className="alert alert-success">{message}</div>}
+
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Amount</label>
+          <input type="number" value={amount} onChange={e => setAmount(e.target.value)} required />
         </div>
 
-        <div className="mb-3">
-          <label className="block mb-1">Source</label>
-          <input
-            type="text"
-            className="w-full border p-2 rounded"
-            value={source}
-            onChange={(e) => setSource(e.target.value)}
-            required
-          />
+        <div className="form-group">
+          <label>Source</label>
+          <input type="text" value={source} onChange={e => setSource(e.target.value)} required />
         </div>
 
-        <div className="mb-3">
-          <label className="block mb-1">Date</label>
-          <input
-            type="date"
-            className="w-full border p-2 rounded"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
+        <div className="form-group">
+          <label>Date</label>
+          <input type="date" value={date} onChange={e => setDate(e.target.value)} required />
         </div>
 
-        <div className="mb-3">
-          <label className="block mb-1">Description</label>
-          <textarea
-            className="w-full border p-2 rounded"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+        <div className="form-group">
+          <label>Description</label>
+          <textarea value={description} onChange={e => setDescription(e.target.value)} />
         </div>
 
-        <div className="mb-4">
-          <label className="block mb-1">Proof (optional)</label>
-          <input
-            type="file"
-            onChange={(e) => setProof(e.target.files[0])}
-          />
+        <div className="file-box">
+          Click to upload proof (optional)
+          <input type="file" onChange={e => setProof(e.target.files[0])} />
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-60"
-        >
+        <button className="submit-btn" type="submit" disabled={loading}>
           {loading ? "Submitting..." : "Add Income"}
         </button>
       </form>
-    </Layout>
-  );
+
+    </div>
+  </div>
+</Layout>
+
+);
+
 };
 
 export default CommitteeAddIncome;
