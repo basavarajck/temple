@@ -28,11 +28,11 @@ export const generateMonthlyPDF = (report, res) => {
   doc.fontSize(11);
 
   report.income.breakdown.forEach((item) => {
-    doc.text(`${item._id}: ₹ ${item.totalAmount}`);
+    doc.text(`${item._id}: Rs. ${item.totalAmount}`);
   });
 
   doc.moveDown();
-  doc.text(`Total Income: ₹ ${report.income.total}`);
+  doc.text(`Total Income: Rs. ${report.income.total}`);
   doc.moveDown(1.5);
 
   /* ---------- EXPENSE ---------- */
@@ -40,17 +40,17 @@ export const generateMonthlyPDF = (report, res) => {
   doc.fontSize(11);
 
   report.expense.breakdown.forEach((item) => {
-    doc.text(`${item._id}: ₹ ${item.totalAmount}`);
+    doc.text(`${item._id}: Rs. ${item.totalAmount}`);
   });
 
   doc.moveDown();
-  doc.text(`Total Expense: ₹ ${report.expense.total}`);
+  doc.text(`Total Expense: Rs. ${report.expense.total}`);
   doc.moveDown(1.5);
 
   /* ---------- SURPLUS ---------- */
   doc.fontSize(14).text("Final Balance").moveDown(0.5);
   doc.fontSize(12);
-  doc.text(`Surplus / Deficit: ₹ ${report.surplus}`);
+  doc.text(`Surplus / Deficit: Rs. ${report.surplus}`);
 
   doc.end();
 };

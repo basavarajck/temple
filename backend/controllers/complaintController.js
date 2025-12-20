@@ -118,3 +118,44 @@ export const updateComplaintStatus = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+/* -----------------------------------------------------------
+   6️⃣ Update Complaint (Status & Reply) - Combined
+----------------------------------------------------------- */
+export const updateComplaint = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, reply } = req.body;
+
+    const complaint = await Complaint.findById(id);
+    if (!complaint) {
+      return res.status(404).json({ message: "Complaint not found" });
+    }
+
+    if (status) {
+      const validStatuses = ["open", "in-progress", "resolved"];
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+      }
+      complaint.status = status;
+    }
+
+    if (reply) {
+      complaint.reply = reply;
+      complaint.repliedBy = req.user.id;
+      // Auto-update status if replying
+      if (complaint.status === "open") {
+        complaint.status = "in-progress";
+      }
+    }
+
+    await complaint.save();
+
+    return res.json({
+      message: "Complaint updated successfully",
+      complaint,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};

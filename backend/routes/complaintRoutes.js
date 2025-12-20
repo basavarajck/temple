@@ -4,7 +4,8 @@ import {
   getMyComplaints,
   getAllComplaints,
   replyToComplaint,
-  updateComplaintStatus
+  updateComplaintStatus,
+  updateComplaint
 } from "../controllers/complaintController.js";
 
 import authMiddleware from "../middleware/authMiddleware.js";
@@ -60,6 +61,17 @@ router.post(
   authMiddleware,
   permitRoles("committee", "admin"),
   updateComplaintStatus
+);
+
+
+/* -------------------------------------------------------------
+    6️⃣ COMMITTEE/Admin: Update Complaint (Status + Reply)
+------------------------------------------------------------- */
+router.put(
+  "/:id",
+  authMiddleware,
+  permitRoles("committee", "admin"),
+  updateComplaint
 );
 
 export default router;

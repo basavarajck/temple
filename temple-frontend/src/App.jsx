@@ -14,6 +14,8 @@ import CommitteeAddExpense from "./pages/CommitteeAddExpense";
 import AdminApproveExpenses from "./pages/AdminApproveExpenses";
 import AdminLockMonth from "./pages/AdminLockMonth";
 import AdminMonthlyReports from "./pages/AdminMonthlyReports";
+import VillagerComplaints from "./pages/VillagerComplaints";
+import ManageComplaints from "./pages/ManageComplaints";
 
 const App = () => {
   return (
@@ -41,6 +43,14 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/villager/complaints"
+          element={
+            <ProtectedRoute allowedRoles={["villager"]}>
+              <VillagerComplaints />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Committee */}
         <Route
@@ -64,6 +74,14 @@ const App = () => {
           element={
             <ProtectedRoute allowedRoles={["committee", "admin"]}>
               <CommitteeAddExpense />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/committee/complaints"
+          element={
+            <ProtectedRoute allowedRoles={["committee", "admin"]}>
+              <ManageComplaints />
             </ProtectedRoute>
           }
         />
