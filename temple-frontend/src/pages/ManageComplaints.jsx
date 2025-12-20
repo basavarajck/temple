@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
+import PageWrapper from "../components/PageWrapper";
+import Loader from "../components/Loader";
 import api from "../api/axios";
+import "../styles/form.css";
+import "../styles/table.css";
 
 const ManageComplaints = () => {
   const [complaints, setComplaints] = useState([]);
@@ -33,24 +37,41 @@ const ManageComplaints = () => {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-semibold mb-6">
-        Manage Complaints
-      </h1>
+      <PageWrapper>
 
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-600">{error}</p>}
+        {/* HEADER */}
+        <div className="page-header">
+          <h1>Manage Complaints</h1>
+          <p>Review, respond, and resolve villager concerns</p>
+        </div>
 
-      {!loading && complaints.length === 0 && (
-        <p>No complaints available.</p>
-      )}
+        {loading && <Loader />}
 
-      {complaints.map((c) => (
-        <ComplaintCard
-          key={c._id}
-          complaint={c}
-          onUpdate={updateComplaint}
-        />
-      ))}
+        {error && <div className="error-box">{error}</div>}
+
+        {!loading && complaints.length === 0 && (
+          <div className="text-center text-gray-500 py-12">
+            <p className="text-lg font-medium">
+              No complaints available
+            </p>
+            <p className="text-sm">
+              All issues are currently resolved
+            </p>
+          </div>
+        )}
+
+        {/* COMPLAINT LIST */}
+        <div className="complaint-list">
+          {complaints.map((c) => (
+            <ComplaintCard
+              key={c._id}
+              complaint={c}
+              onUpdate={updateComplaint}
+            />
+          ))}
+        </div>
+
+      </PageWrapper>
     </Layout>
   );
 };
@@ -60,46 +81,62 @@ const ComplaintCard = ({ complaint, onUpdate }) => {
   const [status, setStatus] = useState(complaint.status);
 
   return (
-    <div className="bg-white p-4 rounded shadow mb-4">
-      <h3 className="font-semibold">{complaint.title}</h3>
+    <div className="complaint-card">
 
-      <p className="text-sm text-gray-600 mb-1">
-        By: {complaint.createdBy?.name || "Villager"}
+      {/* HEADER */}
+      <div className="complaint-header">
+        <div>
+          <h3>{complaint.title}</h3>
+          <p className="muted">
+            By {complaint.createdBy?.name || "Villager"} •{" "}
+            {new Date(complaint.createdAt).toLocaleDateString()}
+          </p>
+        </div>
+
+        <span className={`status-badge ${status}`}>
+          {status.replace("-", " ")}
+        </span>
+      </div>
+
+      {/* MESSAGE */}
+      <p className="complaint-message">
+        {complaint.message}
       </p>
 
-      <p className="mb-2">{complaint.message}</p>
+      {/* ACTIONS */}
+      <div className="complaint-actions">
 
-      <div className="mb-2">
-        <label className="block text-sm mb-1">Status</label>
-        <select
-          className="border p-2 rounded"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
+        <div className="form-group">
+          <label>Status</label>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            <option value="open">Open</option>
+            <option value="in-progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Reply</label>
+          <textarea
+            placeholder="Write a response to the villager..."
+            value={reply}
+            onChange={(e) => setReply(e.target.value)}
+          />
+        </div>
+
+        <button
+          onClick={() =>
+            onUpdate(complaint._id, status, reply)
+          }
+          className="primary-btn"
         >
-          <option value="open">Open</option>
-          <option value="in-progress">In Progress</option>
-          <option value="resolved">Resolved</option>
-        </select>
+          Update Complaint
+        </button>
       </div>
 
-      <div className="mb-3">
-        <label className="block text-sm mb-1">Reply</label>
-        <textarea
-          className="w-full border p-2 rounded"
-          value={reply}
-          onChange={(e) => setReply(e.target.value)}
-          placeholder="Write reply..."
-        />
-      </div>
-
-      <button
-        onClick={() =>
-          onUpdate(complaint._id, status, reply)
-        }
-        className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-      >
-        Update
-      </button>
     </div>
   );
 };

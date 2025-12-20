@@ -1,13 +1,20 @@
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import "../styles/layout.css";
 
 const Layout = ({ children }) => {
   return (
-    <div className="h-screen flex flex-col">
+    <div className="app-layout">
+      {/* TOP NAV */}
       <Navbar />
-      <div className="flex flex-1">
+
+      {/* BODY */}
+      <div className="app-body">
+        {/* SIDEBAR */}
         <Sidebar />
-        <main className="flex-1 p-6 bg-gray-50 overflow-auto">
+
+        {/* MAIN CONTENT */}
+        <main className="app-content">
           {children}
         </main>
       </div>

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
+import PageWrapper from "../components/PageWrapper";
+import Loader from "../components/Loader";
 import api from "../api/axios";
+import "../styles/villagerEvents.css";
 
 const VillagerEvents = () => {
   const [events, setEvents] = useState([]);
@@ -10,7 +13,6 @@ const VillagerEvents = () => {
     const fetchEvents = async () => {
       try {
         const res = await api.get("/events");
-        // show only active events
         setEvents(res.data.filter((e) => e.isActive !== false));
       } catch {
         console.error("Failed to load events");
@@ -23,32 +25,71 @@ const VillagerEvents = () => {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-semibold mb-6">
-        Temple Events & Festivals
-      </h1>
+      <PageWrapper>
 
-      {loading && <p>Loading...</p>}
+        <div className="villager-events-page">
 
-      {!loading && events.length === 0 && (
-        <p>No upcoming events.</p>
-      )}
-
-      {events.map((e) => (
-        <div key={e._id} className="bg-white p-4 rounded shadow mb-4">
-          <h3 className="text-lg font-semibold">{e.title}</h3>
-          <p className="text-sm text-gray-600 mb-1">
-            {new Date(e.startDate).toLocaleDateString()}{" "}
-            {e.endDate &&
-              `– ${new Date(e.endDate).toLocaleDateString()}`}
-          </p>
-          <p className="mb-2">{e.description}</p>
-          {e.schedule && (
-            <p className="text-sm">
-              <strong>Schedule:</strong> {e.schedule}
+          {/* HEADER */}
+          <div className="villager-events-header">
+            <h1>Temple Events & Festivals</h1>
+            <p>
+              Upcoming spiritual programs and celebrations
             </p>
+          </div>
+
+          {loading && <Loader />}
+
+          {!loading && events.length === 0 && (
+            <div className="empty-state">
+              No upcoming events announced yet
+            </div>
           )}
+
+          {/* EVENTS LIST */}
+          <div className="events-list">
+            {events.map((e) => (
+              <div key={e._id} className="event-card">
+
+                {/* DATE BADGE */}
+                <div className="event-date">
+                  {new Date(e.startDate).toLocaleDateString(undefined, {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                  {e.endDate && (
+                    <>
+                      <span className="date-separator">–</span>
+                      {new Date(e.endDate).toLocaleDateString(undefined, {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </>
+                  )}
+                </div>
+
+                {/* CONTENT */}
+                <div className="event-content">
+                  <h3>{e.title}</h3>
+                  <p className="event-description">
+                    {e.description}
+                  </p>
+
+                  {e.schedule && (
+                    <div className="event-schedule">
+                      ⏰ {e.schedule}
+                    </div>
+                  )}
+                </div>
+
+              </div>
+            ))}
+          </div>
+
         </div>
-      ))}
+
+      </PageWrapper>
     </Layout>
   );
 };

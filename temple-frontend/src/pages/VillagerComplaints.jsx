@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
+import PageWrapper from "../components/PageWrapper";
 import api from "../api/axios";
+import "../styles/complaints.css";
 
 const VillagerComplaints = () => {
   const [title, setTitle] = useState("");
@@ -46,75 +48,92 @@ const VillagerComplaints = () => {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-semibold mb-6">
-        Complaints & Suggestions
-      </h1>
+      <PageWrapper>
 
-      {/* SUBMIT FORM */}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-4 rounded shadow max-w-lg mb-8"
-      >
-        {error && <p className="text-red-600 mb-2">{error}</p>}
-        {success && <p className="text-green-600 mb-2">{success}</p>}
+        <div className="complaints-page">
 
-        <div className="mb-3">
-          <label className="block mb-1">Title</label>
-          <input
-            className="w-full border p-2 rounded"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
+          {/* HEADER */}
+          <div className="complaints-header">
+            <h1>Complaints & Suggestions</h1>
+            <p>
+              Submit concerns or suggestions regarding temple management
+            </p>
+          </div>
 
-        <div className="mb-3">
-          <label className="block mb-1">Message</label>
-          <textarea
-            className="w-full border p-2 rounded"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            required
-          />
-        </div>
+          {/* SUBMIT FORM */}
+          <div className="complaint-form-card">
+            <h2>Submit a Complaint</h2>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-60"
-        >
-          {loading ? "Submitting..." : "Submit"}
-        </button>
-      </form>
+            {error && <div className="alert error">{error}</div>}
+            {success && <div className="alert success">{success}</div>}
 
-      {/* LIST */}
-      <h2 className="text-xl font-medium mb-3">
-        My Complaints
-      </h2>
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label>Title</label>
+                <input
+                  placeholder="Brief subject of your complaint"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+              </div>
 
-      {complaints.length === 0 && (
-        <p>No complaints submitted yet.</p>
-      )}
+              <div className="form-group">
+                <label>Message</label>
+                <textarea
+                  placeholder="Explain your concern in detail"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                />
+              </div>
 
-      {complaints.map((c) => (
-        <div
-          key={c._id}
-          className="bg-white p-4 rounded shadow mb-3"
-        >
-          <h3 className="font-semibold">{c.title}</h3>
-          <p className="text-sm text-gray-600 mb-1">
-            Status: <strong>{c.status}</strong>
-          </p>
-          <p className="mb-2">{c.message}</p>
+              <button disabled={loading} className="primary-btn">
+                {loading ? "Submitting..." : "Submit Complaint"}
+              </button>
+            </form>
+          </div>
 
-          {c.reply && (
-            <div className="bg-gray-100 p-2 rounded">
-              <strong>Reply:</strong>
-              <p>{c.reply}</p>
+          {/* LIST */}
+          <div className="my-complaints">
+            <h2>My Complaints</h2>
+
+            {complaints.length === 0 && (
+              <div className="empty-state">
+                You haven’t submitted any complaints yet
+              </div>
+            )}
+
+            <div className="complaint-list">
+              {complaints.map((c) => (
+                <div key={c._id} className="complaint-card">
+
+                  <div className="complaint-top">
+                    <h3>{c.title}</h3>
+                    <span className={`status ${c.status}`}>
+                      {c.status.replace("-", " ")}
+                    </span>
+                  </div>
+
+                  <p className="complaint-message">
+                    {c.message}
+                  </p>
+
+                  {c.reply && (
+                    <div className="complaint-reply">
+                      <strong>Committee Reply</strong>
+                      <p>{c.reply}</p>
+                    </div>
+                  )}
+
+                </div>
+              ))}
             </div>
-          )}
+          </div>
+
         </div>
-      ))}
+
+      </PageWrapper>
     </Layout>
   );
 };

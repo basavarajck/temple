@@ -33,7 +33,7 @@ router.post(
 router.delete(
   "/:id",
   authMiddleware,
-  adminOnly,
+  permitRoles("committee", "admin"),
   disableMedia
 );
 

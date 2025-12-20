@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
+import PageWrapper from "../components/PageWrapper";
+import Loader from "../components/Loader";
 import api from "../api/axios";
+import "../styles/incomeExpense.css";
 
 const VillagerIncomeExpense = () => {
   const [income, setIncome] = useState([]);
@@ -27,18 +30,19 @@ const VillagerIncomeExpense = () => {
 
   return (
     <Layout>
+      <PageWrapper>
       <h1 className="text-2xl font-semibold mb-6">
         Temple Income & Expenses
       </h1>
 
       {loading ? (
-        <p>Loading...</p>
+        <Loader />
       ) : (
         <>
           {/* INCOME TABLE */}
           <h2 className="text-xl font-medium mb-2">Income</h2>
-          <table className="w-full border mb-8">
-            <thead className="bg-gray-200">
+          <table className="w-full border rounded-lg overflow-hidden mb-8">
+            <thead className="bg-gray-100">
               <tr>
                 <th className="border p-2">Date</th>
                 <th className="border p-2">Source</th>
@@ -47,7 +51,7 @@ const VillagerIncomeExpense = () => {
             </thead>
             <tbody>
               {income.map((i) => (
-                <tr key={i._id}>
+                <tr key={i._id} className="hover:bg-gray-50 transition">
                   <td className="border p-2">
                     {new Date(i.date).toLocaleDateString()}
                   </td>
@@ -60,8 +64,8 @@ const VillagerIncomeExpense = () => {
 
           {/* EXPENSE TABLE */}
           <h2 className="text-xl font-medium mb-2">Expenses</h2>
-          <table className="w-full border">
-            <thead className="bg-gray-200">
+          <table className="w-full border rounded-lg overflow-hidden">
+            <thead className="bg-gray-100">
               <tr>
                 <th className="border p-2">Date</th>
                 <th className="border p-2">Category</th>
@@ -71,7 +75,7 @@ const VillagerIncomeExpense = () => {
             </thead>
             <tbody>
               {expense.map((e) => (
-                <tr key={e._id}>
+                <tr key={e._id} className="hover:bg-gray-50 transition">
                   <td className="border p-2">
                     {new Date(e.date).toLocaleDateString()}
                   </td>
@@ -86,6 +90,7 @@ const VillagerIncomeExpense = () => {
           </table>
         </>
       )}
+      </PageWrapper>
     </Layout>
   );
 };

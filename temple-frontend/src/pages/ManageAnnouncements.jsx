@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
+import PageWrapper from "../components/PageWrapper";
 import api from "../api/axios";
+import "../styles/form.css";
+import "../styles/table.css";
 
 const ManageAnnouncements = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
     const res = await api.get("/announcements");
@@ -18,63 +22,86 @@ const ManageAnnouncements = () => {
 
   const addAnnouncement = async (e) => {
     e.preventDefault();
+    setLoading(true);
     await api.post("/announcements/add", { title, message });
     setTitle("");
     setMessage("");
+    setLoading(false);
     fetchData();
   };
 
   const deleteAnnouncement = async (id) => {
+    if (!window.confirm("Delete this announcement?")) return;
     await api.delete(`/announcements/${id}`);
     fetchData();
   };
 
   return (
     <Layout>
-      <h1 className="text-2xl font-semibold mb-6">
-        Manage Announcements
-      </h1>
+      <PageWrapper>
 
-      <form
-        onSubmit={addAnnouncement}
-        className="bg-white p-4 rounded shadow max-w-lg mb-6"
-      >
-        <input
-          className="w-full border p-2 mb-2"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-        <textarea
-          className="w-full border p-2 mb-2"
-          placeholder="Message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          required
-        />
-        <button className="bg-blue-600 text-white px-4 py-2 rounded">
-          Add Announcement
-        </button>
-      </form>
-
-      {announcements.map((a) => (
-        <div
-          key={a._id}
-          className="bg-white p-4 rounded shadow mb-3 flex justify-between"
-        >
-          <div>
-            <h3 className="font-semibold">{a.title}</h3>
-            <p>{a.message}</p>
-          </div>
-          <button
-            onClick={() => deleteAnnouncement(a._id)}
-            className="bg-red-500 text-white px-3 py-1 rounded"
-          >
-            Delete
-          </button>
+        {/* HEADER */}
+        <div className="page-header">
+          <h1>Manage Announcements</h1>
+          <p>Create and manage official temple announcements</p>
         </div>
-      ))}
+
+        {/* ADD ANNOUNCEMENT */}
+        <div className="form-card">
+          <form onSubmit={addAnnouncement}>
+            <div className="form-group">
+              <label>Title</label>
+              <input
+                placeholder="Announcement title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Message</label>
+              <textarea
+                placeholder="Announcement details"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required
+              />
+            </div>
+
+            <button
+              disabled={loading}
+              className="primary-btn"
+            >
+              {loading ? "Posting..." : "Post Announcement"}
+            </button>
+          </form>
+        </div>
+
+        {/* ANNOUNCEMENT LIST */}
+        <div className="announcement-list">
+          {announcements.length === 0 ? (
+            <p className="muted mt-4">No announcements yet</p>
+          ) : (
+            announcements.map((a) => (
+              <div key={a._id} className="announcement-card">
+                <div>
+                  <h3>{a.title}</h3>
+                  <p>{a.message}</p>
+                </div>
+
+                <button
+                  onClick={() => deleteAnnouncement(a._id)}
+                  className="danger-link"
+                >
+                  Delete
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+
+      </PageWrapper>
     </Layout>
   );
 };

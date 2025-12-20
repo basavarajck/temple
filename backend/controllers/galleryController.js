@@ -20,7 +20,7 @@ export const uploadMedia = async (req, res) => {
       title,
       description,
       mediaType: mediaType || "image",
-      fileUrl: req.file.path,
+      fileUrl: req.file.path.replace(/\\/g, "/"),
       event: event || null,
       uploadedBy: req.user.id,
     });

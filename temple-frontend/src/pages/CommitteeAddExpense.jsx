@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Layout from "../components/Layout";
+import PageWrapper from "../components/PageWrapper";
 import api from "../api/axios";
+import "../styles/form.css";
 
 const CommitteeAddExpense = () => {
   const [amount, setAmount] = useState("");
@@ -31,7 +33,9 @@ const CommitteeAddExpense = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setMessage("Expense submitted successfully (pending approval)");
+      setMessage(
+        "Expense submitted successfully. Awaiting admin approval."
+      );
       setAmount("");
       setCategory("");
       setDate("");
@@ -49,73 +53,96 @@ const CommitteeAddExpense = () => {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-semibold mb-6">Add Expense</h1>
+      <PageWrapper>
 
-      {error && <p className="text-red-600 mb-3">{error}</p>}
-      {message && <p className="text-green-600 mb-3">{message}</p>}
-
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow max-w-lg"
-      >
-        <div className="mb-3">
-          <label className="block mb-1">Amount</label>
-          <input
-            type="number"
-            className="w-full border p-2 rounded"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            required
-          />
+        {/* HEADER */}
+        <div className="page-header">
+          <h1>Add Expense</h1>
+          <p>
+            Submit a new expense entry with supporting bill proof
+          </p>
         </div>
 
-        <div className="mb-3">
-          <label className="block mb-1">Category</label>
-          <input
-            type="text"
-            className="w-full border p-2 rounded"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            required
-          />
+        {/* INFO */}
+        <div className="warning-box">
+          ℹ️ All expenses require admin approval before they
+          appear in public records.
         </div>
 
-        <div className="mb-3">
-          <label className="block mb-1">Date</label>
-          <input
-            type="date"
-            className="w-full border p-2 rounded"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
+        {/* FEEDBACK */}
+        {error && <div className="error-box">{error}</div>}
+        {message && <div className="success-box">{message}</div>}
+
+        {/* FORM */}
+        <div className="form-card">
+          <form onSubmit={handleSubmit}>
+
+            <div className="form-group">
+              <label>Amount (₹)</label>
+              <input
+                type="number"
+                placeholder="Enter amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Category</label>
+              <input
+                type="text"
+                placeholder="e.g. Festival, Maintenance"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Date</label>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Description (optional)</label>
+              <textarea
+                placeholder="Brief description of expense"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Bill / Proof (Photo or PDF)</label>
+              <input
+                type="file"
+                onChange={(e) => setProof(e.target.files[0])}
+              />
+              {proof && (
+                <small className="file-hint">
+                  Selected: {proof.name}
+                </small>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="primary-btn w-full"
+            >
+              {loading ? "Submitting..." : "Submit Expense"}
+            </button>
+
+          </form>
         </div>
 
-        <div className="mb-3">
-          <label className="block mb-1">Description</label>
-          <textarea
-            className="w-full border p-2 rounded"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block mb-1">Bill / Proof</label>
-          <input
-            type="file"
-            onChange={(e) => setProof(e.target.files[0])}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-60"
-        >
-          {loading ? "Submitting..." : "Add Expense"}
-        </button>
-      </form>
+      </PageWrapper>
     </Layout>
   );
 };

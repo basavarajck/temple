@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
+import PageWrapper from "../components/PageWrapper";
+import Loader from "../components/Loader";
 import api from "../api/axios";
+import "../styles/announcements.css";
 
 const VillagerAnnouncements = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -22,28 +25,53 @@ const VillagerAnnouncements = () => {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-semibold mb-6">
-        Temple Announcements
-      </h1>
+      <PageWrapper>
 
-      {loading && <p>Loading...</p>}
+        <div className="announcements-page">
 
-      {!loading && announcements.length === 0 && (
-        <p>No announcements available.</p>
-      )}
+          {/* HEADER */}
+          <div className="announcements-header">
+            <h1>Temple Announcements</h1>
+            <p>
+              Important notices and official updates for villagers
+            </p>
+          </div>
 
-      {announcements.map((a) => (
-        <div
-          key={a._id}
-          className="bg-white p-4 rounded shadow mb-3"
-        >
-          <h3 className="font-semibold text-lg">{a.title}</h3>
-          <p className="text-sm text-gray-600 mb-1">
-            {new Date(a.createdAt).toLocaleDateString()}
-          </p>
-          <p>{a.message}</p>
+          {loading && <Loader />}
+
+          {!loading && announcements.length === 0 && (
+            <div className="empty-state">
+              No announcements available at the moment
+            </div>
+          )}
+
+          {/* NOTICE LIST */}
+          <div className="notice-list">
+            {announcements.map((a) => (
+              <div key={a._id} className="notice-card">
+
+                {/* DATE BADGE */}
+                <div className="notice-date">
+                  {new Date(a.createdAt).toLocaleDateString(undefined, {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </div>
+
+                {/* CONTENT */}
+                <div className="notice-content">
+                  <h3>{a.title}</h3>
+                  <p>{a.message}</p>
+                </div>
+
+              </div>
+            ))}
+          </div>
+
         </div>
-      ))}
+
+      </PageWrapper>
     </Layout>
   );
 };

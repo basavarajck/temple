@@ -1,6 +1,9 @@
 import { useState } from "react";
 import Layout from "../components/Layout";
+import PageWrapper from "../components/PageWrapper";
 import api from "../api/axios";
+import "../styles/form.css";
+import "../styles/report.css";
 
 const AdminMonthlyReports = () => {
   const [year, setYear] = useState("");
@@ -36,16 +39,10 @@ const AdminMonthlyReports = () => {
         { responseType: "blob" }
       );
 
-      const url = window.URL.createObjectURL(
-        new Blob([res.data])
-      );
+      const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute(
-        "download",
-        `temple-report-${month}-${year}.pdf`
-      );
-      document.body.appendChild(link);
+      link.download = `temple-report-${month}-${year}.pdf`;
       link.click();
     } catch {
       alert("Failed to download PDF");
@@ -54,76 +51,98 @@ const AdminMonthlyReports = () => {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-semibold mb-6">
-        Monthly Financial Report
-      </h1>
+      <PageWrapper>
 
-      <form
-        onSubmit={fetchReport}
-        className="bg-white p-4 rounded shadow max-w-md mb-6"
-      >
-        <div className="mb-3">
-          <label className="block mb-1">Year</label>
-          <input
-            type="number"
-            className="w-full border p-2 rounded"
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-            required
-          />
+        {/* HEADER */}
+        <div className="page-header">
+          <h1>Monthly Financial Report</h1>
+          <p>Official income & expense summary</p>
         </div>
 
-        <div className="mb-3">
-          <label className="block mb-1">Month</label>
-          <input
-            type="number"
-            min="1"
-            max="12"
-            className="w-full border p-2 rounded"
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
-            required
-          />
+        {/* FILTER FORM */}
+        <div className="form-card">
+          <form onSubmit={fetchReport}>
+            <div className="form-group">
+              <label>Year</label>
+              <input
+                type="number"
+                placeholder="e.g. 2025"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Month</label>
+              <select
+                value={month}
+                onChange={(e) => setMonth(e.target.value)}
+                required
+              >
+                <option value="">Select month</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              className="primary-btn"
+              disabled={loading}
+            >
+              {loading ? "Generating..." : "Generate Report"}
+            </button>
+          </form>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-60"
-        >
-          {loading ? "Loading..." : "View Report"}
-        </button>
-      </form>
+        {/* ERROR */}
+        {error && (
+          <div className="error-box">{error}</div>
+        )}
 
-      {error && <p className="text-red-600 mb-4">{error}</p>}
+        {/* REPORT SUMMARY */}
+        {report && (
+          <div className="report-card">
+            <h2>Report Summary</h2>
 
-      {report && (
-        <div className="bg-white p-6 rounded shadow max-w-xl">
-          <h2 className="text-xl font-semibold mb-4">
-            Report Summary
-          </h2>
+            <div className="report-grid">
+              <div className="report-item income">
+                <span>Total Income</span>
+                <strong>₹ {report.income.total}</strong>
+              </div>
 
-          <p className="mb-2">
-            <strong>Total Income:</strong> ₹{" "}
-            {report.income.total}
-          </p>
-          <p className="mb-2">
-            <strong>Total Expense:</strong> ₹{" "}
-            {report.expense.total}
-          </p>
-          <p className="mb-4">
-            <strong>Surplus / Deficit:</strong> ₹{" "}
-            {report.surplus}
-          </p>
+              <div className="report-item expense">
+                <span>Total Expense</span>
+                <strong>₹ {report.expense.total}</strong>
+              </div>
 
-          <button
-            onClick={downloadPDF}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          >
-            Download PDF
-          </button>
-        </div>
-      )}
+              <div className="report-item surplus">
+                <span>Surplus / Deficit</span>
+                <strong>₹ {report.surplus}</strong>
+              </div>
+            </div>
+
+            <button
+              onClick={downloadPDF}
+              className="download-btn"
+            >
+              Download Official PDF
+            </button>
+          </div>
+        )}
+
+      </PageWrapper>
     </Layout>
   );
 };

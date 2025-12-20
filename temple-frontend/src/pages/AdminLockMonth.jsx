@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Layout from "../components/Layout";
+import PageWrapper from "../components/PageWrapper";
 import api from "../api/axios";
+import "../styles/form.css";
 
 const AdminLockMonth = () => {
   const [year, setYear] = useState("");
@@ -21,7 +23,7 @@ const AdminLockMonth = () => {
         month: Number(month),
       });
 
-      setMessage("Month locked successfully");
+      setMessage("Financial month locked successfully");
       setYear("");
       setMonth("");
     } catch (err) {
@@ -35,51 +37,81 @@ const AdminLockMonth = () => {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-semibold mb-6">
-        Lock Financial Month
-      </h1>
+      <PageWrapper>
 
-      {error && <p className="text-red-600 mb-3">{error}</p>}
-      {message && <p className="text-green-600 mb-3">{message}</p>}
-
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow max-w-md"
-      >
-        <div className="mb-3">
-          <label className="block mb-1">Year</label>
-          <input
-            type="number"
-            className="w-full border p-2 rounded"
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-            placeholder="2025"
-            required
-          />
+        {/* HEADER */}
+        <div className="page-header">
+          <h1>Lock Financial Month</h1>
+          <p>
+            Prevent further income or expense entries for a completed month
+          </p>
         </div>
 
-        <div className="mb-4">
-          <label className="block mb-1">Month (1–12)</label>
-          <input
-            type="number"
-            min="1"
-            max="12"
-            className="w-full border p-2 rounded"
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
-            placeholder="1"
-            required
-          />
+        {/* WARNING */}
+        <div className="warning-box">
+          ⚠️ This action is <strong>irreversible</strong>.  
+          Once a month is locked, committee members cannot modify
+          any income or expense records for that period.
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-60"
-        >
-          {loading ? "Locking..." : "Lock Month"}
-        </button>
-      </form>
+        {/* FEEDBACK */}
+        {error && (
+          <div className="error-box">{error}</div>
+        )}
+        {message && (
+          <div className="success-box">{message}</div>
+        )}
+
+        {/* FORM CARD */}
+        <div className="form-card">
+          <form onSubmit={handleSubmit}>
+
+            <div className="form-group">
+              <label>Year</label>
+              <input
+                type="number"
+                placeholder="e.g. 2025"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Month</label>
+              <select
+                value={month}
+                onChange={(e) => setMonth(e.target.value)}
+                required
+              >
+                <option value="">Select month</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="danger-btn"
+            >
+              {loading ? "Locking Month..." : "Confirm & Lock Month"}
+            </button>
+
+          </form>
+        </div>
+
+      </PageWrapper>
     </Layout>
   );
 };

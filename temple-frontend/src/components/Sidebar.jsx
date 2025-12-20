@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { getUser } from "../auth/authUtils";
+import "../styles/sidebar.css";
 
 const Sidebar = () => {
   const user = getUser();
+  const location = useLocation();
 
   const menu = {
     villager: [
@@ -33,20 +35,31 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-60 bg-gray-100 h-full p-4">
-      <ul className="space-y-2">
-        {menu[user?.role]?.map((item) => (
-          <li key={item.path}>
+    <aside className="sidebar">
+      {/* HEADER */}
+      <div className="sidebar-header">
+        <h2>Temple Portal</h2>
+        <p>{user?.role?.toUpperCase()}</p>
+      </div>
+
+      {/* MENU */}
+      <nav className="sidebar-menu">
+        {menu[user?.role]?.map((item) => {
+          const isActive = location.pathname === item.path;
+
+          return (
             <Link
+              key={item.path}
               to={item.path}
-              className="block px-3 py-2 rounded hover:bg-blue-100"
+              className={`sidebar-link ${isActive ? "active" : ""}`}
             >
-              {item.label}
+              <span>{item.label}</span>
+              <span className="arrow">→</span>
             </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+          );
+        })}
+      </nav>
+    </aside>
   );
 };
 

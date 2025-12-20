@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import "../styles/form.css";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -23,14 +24,14 @@ const Register = () => {
         name,
         email,
         password,
-        role: "villager", // 🔒 force villager role
+        role: "villager",
       });
 
-      setSuccess("Registration successful. Please login.");
+      setSuccess("Registration successful. Redirecting to login...");
       setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
       setError(
-        err.response?.data?.message || "Registration failed."
+        err.response?.data?.message || "Registration failed"
       );
     } finally {
       setLoading(false);
@@ -38,78 +39,73 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm"
-      >
-        <h2 className="text-2xl font-semibold text-center mb-4">
-          Villager Registration
-        </h2>
+    <div className="auth-container">
+      <div className="auth-card">
 
-        {error && (
-          <p className="text-red-600 text-sm mb-3 text-center">
-            {error}
-          </p>
-        )}
-
-        {success && (
-          <p className="text-green-600 text-sm mb-3 text-center">
-            {success}
-          </p>
-        )}
-
-        <div className="mb-3">
-          <label className="block text-sm mb-1">Name</label>
-          <input
-            type="text"
-            className="w-full border px-3 py-2 rounded"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+        {/* HEADER */}
+        <div className="auth-header">
+          <h1>Temple Transparency System</h1>
+          <p>Villager Registration</p>
         </div>
 
-        <div className="mb-3">
-          <label className="block text-sm mb-1">Email</label>
-          <input
-            type="email"
-            className="w-full border px-3 py-2 rounded"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+        {/* FEEDBACK */}
+        {error && <div className="error-box">{error}</div>}
+        {success && <div className="success-box">{success}</div>}
 
-        <div className="mb-4">
-          <label className="block text-sm mb-1">Password</label>
-          <input
-            type="password"
-            className="w-full border px-3 py-2 rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+        {/* FORM */}
+        <form onSubmit={handleSubmit}>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-60"
-        >
-          {loading ? "Registering..." : "Register"}
-        </button>
+          <div className="form-group">
+            <label>Full Name</label>
+            <input
+              type="text"
+              placeholder="Your full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
 
-        <p className="text-sm text-center mt-4">
-          Already registered?{" "}
-          <span
-            className="text-blue-600 cursor-pointer"
-            onClick={() => navigate("/login")}
+          <div className="form-group">
+            <label>Email Address</label>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              placeholder="Create a strong password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="primary-btn w-full"
           >
-            Login
+            {loading ? "Registering..." : "Create Account"}
+          </button>
+        </form>
+
+        {/* FOOTER */}
+        <p className="auth-footer">
+          Already registered?{" "}
+          <span onClick={() => navigate("/login")}>
+            Login here
           </span>
         </p>
-      </form>
+
+      </div>
     </div>
   );
 };
