@@ -80,21 +80,26 @@ export const deleteMedia = async (req, res) => {
       return res.status(404).json({ message: "Media not found" });
     }
 
-    // 1. Delete from Cloudinary
+    // 1. Delete from Cloudinary (Best Effort)
     if (media.publicId) {
-      await cloudinary.uploader.destroy(media.publicId, {
-        resource_type: "auto",
-      });
+      try {
+        await cloudinary.uploader.destroy(media.publicId, {
+          resource_type: media.mediaType === "video" ? "video" : "image",
+        });
+      } catch (cloudError) {
+        console.error("Cloudinary delete failed/timeout (ignoring):", cloudError);
+        // Continue to delete from DB anyway
+      }
     }
 
-    // 2. Delete from DB
+    // 2. Delete from DB (The important part for the user)
     await Gallery.findByIdAndDelete(id);
 
     // 3. Log Activity
     await logActivity(
       "DELETE_MEDIA",
       "Gallery",
-      id, // Pass ID string
+      id,
       req.user.id,
       { title: media.title }
     );
