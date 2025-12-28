@@ -99,12 +99,12 @@ const ManageGallery = () => {
                 <div className="media-wrapper">
                   {m.mediaType === "image" ? (
                     <img
-                      src={`http://localhost:5000/${m.fileUrl.replace(/\\/g, "/")}`}
+                      src={m.fileUrl}
                       alt={m.title}
                     />
                   ) : (
                     <video
-                      src={`http://localhost:5000/${m.fileUrl.replace(/\\/g, "/")}`}
+                      src={m.fileUrl}
                       controls
                     />
                   )}

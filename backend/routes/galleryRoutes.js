@@ -7,7 +7,7 @@ import {
 
 import authMiddleware from "../middleware/authMiddleware.js";
 import upload from "../middleware/uploadMiddleware.js";
-import { permitRoles, adminOnly } from "../middleware/roleMiddleware.js";
+import { permitRoles } from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
@@ -28,7 +28,7 @@ router.post(
 );
 
 /* -------------------------------------------------
-   3️⃣ ADMIN ONLY — Disable media
+   3️⃣ ADMIN / COMMITTEE — Disable media
 ------------------------------------------------- */
 router.delete(
   "/:id",
