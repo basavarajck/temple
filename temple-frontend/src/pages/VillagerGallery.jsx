@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Layout from "../components/Layout";
+// Layout removed
 import PageWrapper from "../components/PageWrapper";
 import Loader from "../components/Loader";
 import api from "../api/axios";
@@ -23,7 +23,10 @@ const VillagerGallery = () => {
     const fetchMedia = async () => {
       try {
         const res = await api.get("/gallery");
-        const activeMedia = res.data.filter((m) => m.isActive !== false);
+        // Only show Active items AND items served from Cloudinary
+        const activeMedia = res.data.filter(
+          (m) => m.isActive !== false && m.fileUrl && m.fileUrl.includes("cloudinary.com")
+        );
         setMedia(activeMedia.length > 0 ? activeMedia : fallbackImages);
       } catch {
         console.error("Failed to load gallery");
@@ -76,7 +79,7 @@ const VillagerGallery = () => {
   );
 
   return (
-    <Layout>
+    <>
       <PageWrapper>
         <div className="gallery-page">
           <div className="gallery-header">
@@ -97,7 +100,7 @@ const VillagerGallery = () => {
           )}
         </div>
       </PageWrapper>
-    </Layout>
+    </>
   );
 };
 
